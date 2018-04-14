@@ -34,6 +34,7 @@
             </v-flex>
             <v-flex class="text-xs-center" mt-5>
               <v-btn color="primary" type="submit" :disabled="!formValid || loading" depressed outline>Entrar</v-btn>
+              <v-btn color="error" :disabled="loading" depressed outline>Forgot Password?</v-btn>
             </v-flex>
             <v-flex xs12 class="text-xs-center" v-if="loading" mt-5>
               <v-progress-circular indeterminate color="primary"></v-progress-circular>
@@ -59,7 +60,7 @@ export default {
   },
   methods: {
     signIn() {
-      this.$store.dispatch('userSignIn', { username: this.email, password: this.password })
+      this.$store.dispatch('userSignIn', { email: this.email, password: this.password })
     },
   },
   computed: {
