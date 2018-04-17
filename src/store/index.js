@@ -16,6 +16,7 @@ const store = new Vuex.Store({
     user: null,
     userToken: null,
     todo: [],
+    newTask: null,
   },
   mutations: {
     setError(state, payload) {
@@ -31,7 +32,12 @@ const store = new Vuex.Store({
       state.userToken = payload;
     },
     setTodo(state, payload) {
-      state.todo = payload;
+      state.todo = [ ...state.todo, ...payload];
+    },
+    setNewTask(state, payload) {
+      payload.author = state.user
+      state.todo = [ ...state.todo, ...[payload]];
+      state.newTask = payload
     },
   },
   actions: {
@@ -45,7 +51,10 @@ const store = new Vuex.Store({
           router.push('/home')
         })
         .catch((err)=> {
-          commit('setError',  err.response.data.data.message );
+          commit('setError',  err.response.data.data.message);
+        })
+        .catch((err) => {
+          commit('setError',  'A connection error ocurred, try again later');
         })
         .finally(()=> {
           commit('setLoading', false);
@@ -58,6 +67,51 @@ const store = new Vuex.Store({
       commit('setUserToken', null);
       commit('setLoading', false);
       router.push('/');
+    },
+    getTasks({ commit }) {
+      commit('setLoading', true)
+      axios.get(API_URL + `tasks/author/${store.state.user._id}`, { headers: { authorization: store.state.userToken } })
+        .catch((err)=> {
+          commit('setError',  err.response.data.data.message);
+        })
+        .catch((err) => {
+          commit('setError',  'An error ocurred, try again later');
+        })
+        .finally(() => {
+          commit('setLoading', false);
+        });
+    },
+    createTask({ commit }, payload) {
+      commit('setLoading', true)
+      axios.post(API_URL + 'tasks', payload, { headers: { authorization: store.state.userToken } })
+        .then((resp)=> {
+          commit('setNewTask', resp.data.data)
+        })
+        .catch((err)=> {
+          commit('setError',  err.response.data.data.message);
+        })
+        .catch((err) => {
+          commit('setError',  'An error ocurred, try again later');
+        })
+        .finally(() => {
+          commit('setLoading', false);
+        });
+    },
+    deleteTask({ commit }, payload) {
+      commit('setLoading', true)
+      axios.delete(API_URL + `tasks/${payload._id}`, { headers: { authorization: store.state.userToken } })
+        .then((resp) => {
+          commit('setError',  null);
+        })
+        .catch((err)=> {
+          commit('setError',  err.response.data.data.message);
+        })
+        .catch((err) => {
+          commit('setError',  'An error ocurred, try again later');
+        })
+        .finally(() => {
+          commit('setLoading', false);
+        });
     },
   },
   getters: {

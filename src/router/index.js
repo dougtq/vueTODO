@@ -1,14 +1,17 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+
 import Index from '@/components/Index';
 import Home from '@/components/Home';
 import User from '@/components/User';
 import NotFound from '@/components/NotFound';
 import ToDo from '@/components/ToDo';
+import store from '@/store';
 
 Vue.use(Router);
 
-export default new Router({
+const myRoutes = new Router({
+  suppressTransitionError: true,
   mode: 'history',
   routes: [
     {
@@ -24,17 +27,35 @@ export default new Router({
     {
       path: '/home',
       name: 'Home',
-      component: Home
+      component: Home,
+      meta: {
+        requiresAuth: true,
+      },
     },
     {
       path: '/user',
       name: 'User',
-      component: User
+      component: User,
+      meta: {
+        requiresAuth: true,
+      },
     },
     {
       path: '/todo',
       name: 'ToDo',
-      component: ToDo
+      component: ToDo,
+      meta: {
+        requiresAuth: true,
+      },
     },
   ],
 });
+
+myRoutes.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth && !store.state.userToken) {
+    return next('/');
+  };
+  next();
+});
+
+export default myRoutes;

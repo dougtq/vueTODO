@@ -33,7 +33,7 @@
             <v-icon>exit_to_app</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title>Sair</v-list-tile-title>
+            <v-list-tile-title>Quit</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
@@ -81,14 +81,14 @@ export default {
             icon: 'home',
           },
           {
-            route: { name: 'User' },
-            name: 'User',
-            icon: 'account_circle',
-          },
-          {
             route: { name: 'ToDo' },
             name: 'To Do',
             icon: 'receipt',
+          },
+          {
+            route: { name: 'User' },
+            name: 'User',
+            icon: 'account_circle',
           },
         ]
       }

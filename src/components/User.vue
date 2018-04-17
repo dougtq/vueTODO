@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-layout row wrap>
       <v-flex xs12 class="text-xs-center" mt-5>
-        <h1>Log In</h1>
+        <h1>{{name}}</h1>
       </v-flex>
       <v-flex xs12 sm6 offset-sm3 mt-3>
         <v-form v-model="formValid" @submit.prevent="userSignIn">
@@ -42,19 +42,9 @@
                 :rules="emailRules"
                 required></v-text-field>
             </v-flex>
-            <v-flex>
-              <v-text-field
-                name="createdAt"
-                label="Created At"
-                id="createdAt"
-                type="text"
-                disabled
-                v-model="user.createdAt">
-              </v-text-field>
-            </v-flex>
             <v-flex class="text-xs-center" mt-5>
               <v-btn color="primary" outline type="submit" :disabled="!formValid || loading">Update</v-btn>
-              <v-btn color="warning" outline :disabled="loading">Cancel</v-btn>
+              <v-btn color="warning" :to="{ name: 'Home' }" outline :disabled="loading">Cancel</v-btn>
             </v-flex>
             <v-flex xs12 class="text-xs-center" v-if="loading" mt-5>
               <v-progress-circular indeterminate color="primary"></v-progress-circular>
@@ -70,6 +60,7 @@
 export default {
   data () {
     return {
+      name: 'User Info',
       alert: false,
       formValid: false,
       user: this.$store.state.user,
