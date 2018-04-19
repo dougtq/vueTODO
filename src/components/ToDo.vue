@@ -1,12 +1,12 @@
 <template>
   <v-container fluid>
     <v-flex xs12 class="text-xs-center" mt-4>
+      <h1>{{name}}</h1>
+    </v-flex>
+    <v-flex xs12 class="text-xs-center" mt-4>
       <v-alert type="error" dismissible v-model="alert">
         {{ error }}
       </v-alert>
-    </v-flex>
-    <v-flex xs12 class="text-xs-center" mt-4>
-      <h1>{{name}}</h1>
     </v-flex>
     <v-dialog v-model="dialog" max-width="500px">
       <v-btn color="orange" dark outline slot="activator" class="mb-2">New Item</v-btn>
@@ -31,20 +31,24 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="orange" outline flat @click.native="close">Cancel</v-btn>
-          <v-btn color="blue darken-1" outline flat @click.native="save">Save</v-btn>
+          <v-btn color="orange" outline flat :disabled="loading" @click.native="close">Cancel</v-btn>
+          <v-btn color="blue darken-1" outline :disabled="loading" flat @click.native="save">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
     <v-btn color="red" dark outline class="mb-2" :to="{ name: 'Home' }">Cancel</v-btn>
+    <v-btn color="teal" dark outline class="mb-2" @click="initialize">Refresh</v-btn>
+    <v-flex xs12 class="text-xs-center" v-if="loading" mt-5>
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    </v-flex>
     <v-data-table
       :headers="headers"
       :items="items"
       hide-actions
       class="elevation-1">
       <template slot="items" slot-scope="props">
-        <td class="text-xs-right">{{ props.item.title }}</td>
-        <td class="text-xs-right">{{ (props.item.done) }}</td>
+        <td class="text-xs-center"><b>{{ props.item.title }}</b></td>
+        <td class="text-xs-center"><b>{{ (props.item.done) ? 'Yes' : 'No' }}</b></td>
         <td class="justify-center layout px-0">
           <v-btn icon class="mx-0" @click="editItem(props.item)">
             <v-icon color="teal">edit</v-icon>
@@ -65,6 +69,7 @@
   export default {
     data: () => ({
       name: 'To Do',
+      alert: false,
       dialog: false,
       headers: [
         { text: 'Title', value: '', sortable: false, align: 'center', },
@@ -92,7 +97,13 @@
     computed: {
       formTitle () {
         return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
-      }
+      },
+      error() {
+        return this.$store.state.error;
+      },
+      loading() {
+        return this.$store.state.loading;
+      },
     },
     watch: {
       dialog (val) {
@@ -114,7 +125,7 @@
     },
     methods: {
       async initialize () {
-        // await this.$store.dispatch('getTasks')
+        await this.$store.dispatch('getTasks')
         this.items = this.$store.state.todo
       },
       async updateItems () {
@@ -127,7 +138,13 @@
       },
       deleteItem (item) {
         const index = this.items.indexOf(item)
-        confirm('Are you sure you want to delete this item?') && this.items.splice(index, 1)
+
+        if (confirm('Are you sure you want to delete this item?')) {
+          this.$store.dispatch('deleteTask', item)
+          if (this.error) {
+            this.items.splice(index, 1)
+          }
+        }
       },
       close () {
         this.dialog = false

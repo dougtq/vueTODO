@@ -5,7 +5,7 @@
         <h1>{{name}}</h1>
       </v-flex>
       <v-flex xs12 sm6 offset-sm3 mt-3>
-        <v-form v-model="formValid" @submit.prevent="userSignIn">
+        <v-form v-model="formValid">
           <v-layout column>
             <v-flex>
               <v-alert type="error" dismissible v-model="alert">
@@ -14,36 +14,16 @@
             </v-flex>
             <v-flex>
               <v-text-field
-                name="id"
-                label="Id"
-                id="id"
-                type="text"
-                v-model="user._id"
-                disabled
-                required></v-text-field>
-            </v-flex>
-            <v-flex>
-              <v-text-field
-                name="name"
-                label="Name"
-                id="name"
-                type="text"
-                v-model="user.name"
-                :rules="nameRules"
-                required></v-text-field>
-            </v-flex>
-            <v-flex>
-              <v-text-field
                 name="email"
                 label="E-mail"
                 id="email"
                 type="email"
-                v-model="user.email"
+                disabled
+                v-model="email"
                 :rules="emailRules"
                 required></v-text-field>
             </v-flex>
             <v-flex class="text-xs-center" mt-5>
-              <v-btn color="primary" outline type="submit" :disabled="!formValid || loading">Update</v-btn>
               <v-btn color="warning" :to="{ name: 'Home' }" outline :disabled="loading">Cancel</v-btn>
             </v-flex>
             <v-flex xs12 class="text-xs-center" v-if="loading" mt-5>
@@ -63,16 +43,11 @@ export default {
       name: 'User Info',
       alert: false,
       formValid: false,
-      user: this.$store.state.user,
-      emailRules: [(r) => !!r || `E-mail é obrigatório`],
-      nameRules: [(r) => !!r || `Senha é obrigatória`],
-    }
+      email: this.$store.state.user.email,
+      emailRules: [(r) => !!r || `E-mail is required`],
+    };
   },
-  methods: {
-    userUpdate () {
-      // this.$store.dispatch('userSignIn', { email: this.email, password: this.password })
-    }
-  },
+  methods: {},
   computed: {
     error () {
       return this.$store.state.error
@@ -91,7 +66,7 @@ export default {
       if (!value) {
         this.$store.commit('setError', null)
       }
-    }
-  }
+    },
+  },
 }
 </script>

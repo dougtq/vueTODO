@@ -6,6 +6,8 @@ import Home from '@/components/Home';
 import User from '@/components/User';
 import NotFound from '@/components/NotFound';
 import ToDo from '@/components/ToDo';
+import Add from '@/components/CreateUser';
+
 import store from '@/store';
 
 Vue.use(Router);
@@ -16,13 +18,18 @@ const myRoutes = new Router({
   routes: [
     {
       path: '*',
-      name: 'Not Found',
+      name: 'NotFound',
       component: NotFound
     },
     {
       path: '/',
       name: 'Index',
       component: Index,
+    },
+    {
+      path: '/create-user',
+      name: 'CreateUser',
+      component: Add,
     },
     {
       path: '/home',
@@ -52,7 +59,7 @@ const myRoutes = new Router({
 });
 
 myRoutes.beforeEach((to, from, next) => {
-  if (to.meta.requiresAuth && !store.state.userToken) {
+  if (to.meta.requiresAuth && (!store.state.user)) {
     return next('/');
   };
   next();
