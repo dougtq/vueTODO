@@ -66,7 +66,7 @@ export default {
       email: '',
       emailRules: [(r) => !!r || 'E-mail is required', r => !!r && /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(r) || 'E-mail must be valid'],
       password: '',
-      passwordRules: [(r) => !!r || `Password is required`],
+      passwordRules: [(r) => !!r || `Password is required`, r => r.length > 5 || 'Password got to have at least 6 characters'],
       passwordConfirmation: '',
       passwordConfirmationRules: [(r) => !!r || `Password is required`, (r) => (!!r && r === this.password || `The passwords don't match`)],
     }
