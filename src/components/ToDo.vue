@@ -5,11 +5,11 @@
     </v-flex>
     <v-flex xs12 class="text-xs-center" mt-4>
       <v-alert type="error" dismissible v-model="alert">
-        {{ error }}
+        {{error}}
       </v-alert>
     </v-flex>
     <v-dialog v-model="dialog" max-width="500px">
-      <v-btn color="orange" dark outline slot="activator" class="mb-2">New Item</v-btn>
+      <v-btn color="primary" dark outline slot="activator" class="mb-2">New Item</v-btn>
       <v-card>
         <v-card-title>
           <span class="headline">{{ formTitle }}</span>
@@ -24,7 +24,7 @@
                 <v-text-field label="Description"  v-model="editedItem.description"></v-text-field>
               </v-flex>
               <v-flex xs12 sm6 md4>
-                <v-checkbox label="Done?" :disabled="editedIndex === -1" v-model="editedItem.done"></v-checkbox>
+                <v-checkbox label="Done?" v-model="editedItem.done"></v-checkbox>
               </v-flex>
             </v-layout>
           </v-container>
@@ -37,16 +37,15 @@
       </v-card>
     </v-dialog>
     <v-btn color="red" dark outline class="mb-2" :to="{ name: 'Home' }">Cancel</v-btn>
-    <v-btn color="teal" dark outline class="mb-2" @click="initialize">Refresh</v-btn>
     <v-flex xs12 class="text-xs-center" v-if="loading" mt-5>
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
     </v-flex>
     <v-data-table
       :headers="headers"
-      :items="items"
-      hide-actions
+      :items="todos" 
       class="elevation-1">
       <template slot="items" slot-scope="props">
+        <tr>
         <td class="text-xs-center"><b>{{ props.item.title }}</b></td>
         <td class="text-xs-center"><b>{{ (props.item.done) ? 'Yes' : 'No' }}</b></td>
         <td class="justify-center layout px-0">
@@ -57,9 +56,10 @@
             <v-icon color="pink">delete</v-icon>
           </v-btn>
         </td>
+        </tr>
       </template>
       <template slot="no-data">
-        <v-btn color="primary" @click="initialize">Reset</v-btn>
+        <v-btn color="orange" @click="initialize">Reset</v-btn>
       </template>
     </v-data-table>
   </v-container>
@@ -67,33 +67,33 @@
 
 <script>
   export default {
-    data: () => ({
-      name: 'To Do',
-      alert: false,
-      dialog: false,
-      headers: [
-        { text: 'Title', value: '', sortable: false, align: 'center', },
-        { text: 'Done', value: '', sortable: false, align: 'center', },
-        { text: 'Actions', value: 'name', sortable: false, align: 'center', }
-      ],
-      items: [],
-      editedIndex: -1,
-      editedItem: {
-        _id: '',
-        title: '',
-        author: {},
-        description: '',
-        done: false,
-      },
-      defaultItem: {
-        _id: '',
-        title: '',
-        author: {},
-        description: '',
-        done: false,
-      },
-      titleRules: [r => !!r || 'Title is required'],
-    }),
+    data: function () {
+      return {
+        name: 'To Do',
+        alert: false,
+        dialog: false,
+        headers: [
+          { text: 'Title', value: '', sortable: false, align: 'center', },
+          { text: 'Done', value: '', sortable: false, align: 'center', },
+          { text: 'Actions', value: 'name', sortable: false, align: 'center', }
+        ],
+        titleRules: [r => !!r || 'Title is required'],
+        editedIndex: -1,
+        editedItem: {
+          id: '',
+          title: '',
+          description: '',
+          done: false,
+        },
+        defaultItem: {
+          id: '',
+          title: '',
+          author: {},
+          description: '',
+          done: false,
+        },
+      };
+    },
     computed: {
       formTitle () {
         return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
@@ -103,6 +103,9 @@
       },
       loading() {
         return this.$store.state.loading;
+      },
+      todos() {
+        return this.$store.state.todo;
       },
     },
     watch: {
@@ -125,26 +128,23 @@
     },
     methods: {
       async initialize () {
-        await this.$store.dispatch('getTasks')
-        this.items = this.$store.state.todo
+        await this.$store.dispatch('getTasks');
       },
       async updateItems () {
-        this.items.splice(0, 0, this.$store.state.newTask)
+        // this.todos.splice(0, 0, this.$store.state.newTask);
       },
       editItem (item) {
-        this.editedIndex = this.items.indexOf(item)
-        this.editedItem = Object.assign({}, item)
-        this.dialog = true
+        this.editedIndex = this.todos.indexOf(item);
+        this.editedItem = Object.assign({}, item);
+        this.dialog = true;
       },
       deleteItem (item) {
-        const index = this.items.indexOf(item)
+        // const index = this.todos.indexOf(item);
 
         if (confirm('Are you sure you want to delete this item?')) {
-          this.$store.dispatch('deleteTask', item)
-          if (this.error) {
-            this.items.splice(index, 1)
-          }
-        }
+          this.$store.dispatch('deleteTask', item);
+          this.initialize();
+        };
       },
       close () {
         this.dialog = false
@@ -156,16 +156,21 @@
       async save () {
         if (this.editedItem.title) {
           if (this.editedIndex > -1) {
-            Object.assign(this.items[this.editedIndex], this.editedItem)
+            Object.assign(this.todos[this.editedIndex], this.editedItem);
           } else {
-            this.$store.dispatch('createTask', this.editedItem)
-            // this.editedItem._id = this.$store.state.newTask._id
-            this.editedItem.done = false
-            this.items.splice(0, 0, this.editedItem)
-          }
-          this.close()
-        }
-      }
-    }
+            this.$store.dispatch('createTask', this.editedItem);
+            this.initialize();
+          };
+          this.close();
+        };
+      },
+    },
   }
 </script>
+
+<style scoped>
+  td:-moz-drag-over {
+    background-color: lightcyan;
+  }
+</style>
+
