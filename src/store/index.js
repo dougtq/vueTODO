@@ -57,6 +57,8 @@ const store = new Vuex.Store({
         .then(user => {
           commit('setUser', { email: user.email });
           commit('setError', null);
+
+          sessionStorage.setItem('email', user.email);
           router.push('/home');
         })
         .catch(error => {
@@ -73,6 +75,7 @@ const store = new Vuex.Store({
       firebase.auth().signOut();
       commit('setUser', null);
       commit('setError', null);
+      sessionStorage.clear();
       router.push('/');
     },
     resetPassword ({commit}, payload) {
