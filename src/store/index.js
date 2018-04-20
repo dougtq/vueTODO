@@ -73,9 +73,9 @@ const store = new Vuex.Store({
     },
     userSignOut ({commit}) {
       firebase.auth().signOut();
+      sessionStorage.clear();
       commit('setUser', null);
       commit('setError', null);
-      sessionStorage.clear();
       router.push('/');
     },
     resetPassword ({commit}, payload) {
@@ -136,16 +136,36 @@ const store = new Vuex.Store({
           commit('setLoading', false);
         });
     },
+    updateTask({ commit }, payload) {
+      commit('setLoading', true);
+      const { email } = store.state.user;
+      const key = email.replace(/[^a-zA-Z]/g, '');
+      const id = payload.id;
+      
+      fireDB.ref(`${key}/${id}`)
+        .update(payload)
+        .then((resp) => {
+          commit('setError',  null);
+        })
+        .catch((err)=> {
+          commit('setError',  err.response.data.data.message);
+        })
+        .catch((err) => {
+          commit('setError',  'An error ocurred, try again later');
+        })
+        .finally(() => {
+          commit('setLoading', false);
+        });      
+    },
     deleteTask({ commit }, payload) {
       commit('setLoading', true)
       
       const { email } = store.state.user;
       const key = email.replace(/[^a-zA-Z]/g, '');
-      const id = generate();
-      payload.id = id;
+      const id = payload.id;
 
       fireDB.ref(`${key}/${id}`)
-        .delete()
+        .remove()
         .then((resp) => {
           commit('setError',  null);
         })
@@ -162,10 +182,10 @@ const store = new Vuex.Store({
   },
   getters: {
     isAuthenticated (state) {
-      return !!state.user
+      return !!state.user;
     },
     getAllTasks (state) {
-      return state.todo
+      return state.todo;
     },
   },
 });
