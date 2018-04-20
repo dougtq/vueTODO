@@ -139,8 +139,6 @@
         this.dialog = true;
       },
       deleteItem (item) {
-        // const index = this.todos.indexOf(item);
-
         if (confirm('Are you sure you want to delete this item?')) {
           this.$store.dispatch('deleteTask', item);
           this.initialize();
@@ -156,11 +154,11 @@
       async save () {
         if (this.editedItem.title) {
           if (this.editedIndex > -1) {
-            Object.assign(this.todos[this.editedIndex], this.editedItem);
+            this.$store.dispatch('updateTask', this.editedItem);
           } else {
             this.$store.dispatch('createTask', this.editedItem);
-            this.initialize();
           };
+          this.initialize();
           this.close();
         };
       },
