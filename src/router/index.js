@@ -7,6 +7,7 @@ import User from '@/components/User';
 import NotFound from '@/components/NotFound';
 import ToDo from '@/components/ToDo';
 import Add from '@/components/CreateUser';
+import Reset from '@/components/ForgotPassword';
 
 import store from '@/store';
 
@@ -30,6 +31,11 @@ const myRoutes = new Router({
       path: '/create-user',
       name: 'CreateUser',
       component: Add,
+    },
+    {
+      path: '/reset',
+      name: 'ResetPassword',
+      component: Reset,
     },
     {
       path: '/home',
