@@ -124,7 +124,7 @@ const store = new Vuex.Store({
       fireDB.ref(`${key}/${id}`).set(payload)
         .then((resp)=> {
           commit('setError',  null);
-          commit('addTask', payload);
+          // commit('addTask', payload);
         })
         .catch((err)=> {
           commit('setError',  err);
