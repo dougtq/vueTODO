@@ -4,6 +4,7 @@ import Router from 'vue-router';
 import Index from '@/components/Index';
 import Home from '@/components/Home';
 import User from '@/components/User';
+import Media from '@/components/Media';
 import NotFound from '@/components/NotFound';
 import ToDo from '@/components/ToDo';
 import Add from '@/components/CreateUser';
@@ -54,6 +55,14 @@ const myRoutes = new Router({
       },
     },
     {
+      path: '/media',
+      name: 'Media',
+      component: Media,
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
       path: '/todo',
       name: 'ToDo',
       component: ToDo,
@@ -65,7 +74,7 @@ const myRoutes = new Router({
 });
 
 myRoutes.beforeEach((to, from, next) => {
-  if (to.meta.requiresAuth && (!store.state.user)) {
+  if (to.meta.requiresAuth && (!sessionStorage.getItem('email') || !store.state.user)) {
     return next('/');
   };
   next();
