@@ -2,10 +2,10 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import { generate } from 'shortid';
 
-import firebase from '@/service/firebase';
+import { fireDB, storage, auth } from '@/service/firebase';
 import router from '@/router';
 
-const fireDB = firebase.database()
+// const fireDB = firebase.database();
 
 Vue.use(Vuex);
 
@@ -35,9 +35,9 @@ const store = new Vuex.Store({
     }
   },
   actions: {
-    createUser ({commit}, payload) {
+    createUser ({ commit }, payload) {
       commit('setLoading', true)
-      firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
+      auth.createUserWithEmailAndPassword(payload.email, payload.password)
       .then(user => {
         commit('setUser', { email: user.email })
         commit('setError', null)
@@ -52,7 +52,7 @@ const store = new Vuex.Store({
     },
     userSignIn ({commit}, payload) {
       commit('setLoading', true)
-      firebase.auth()
+      auth
         .signInWithEmailAndPassword(payload.email, payload.password)
         .then(user => {
           commit('setUser', { email: user.email });
@@ -72,7 +72,7 @@ const store = new Vuex.Store({
       commit('setUser', { email: payload.email });
     },
     userSignOut ({commit}) {
-      firebase.auth().signOut();
+      auth.signOut();
       sessionStorage.clear();
       commit('setUser', null);
       commit('setError', null);
@@ -80,7 +80,7 @@ const store = new Vuex.Store({
     },
     resetPassword ({commit}, payload) {
       commit('setLoading', true);
-      firebase.auth()
+      auth
       .sendPasswordResetEmail(payload.email)
       .then(() => {
         commit('setError', null);
