@@ -24,7 +24,12 @@
                 required></v-text-field>
             </v-flex>
             <v-flex class="text-xs-center" mt-5>
-              <v-btn color="warning" :to="{ name: 'Home' }" outline>Cancel</v-btn>
+              <v-btn color="primary" :to="{ name: 'Media' }" outline>
+                <v-icon color="primary">camera_alt</v-icon>
+              </v-btn>
+              <v-btn color="error" :to="{ name: 'Home' }" outline>
+                <v-icon color="error">close</v-icon>
+              </v-btn>
             </v-flex>
             <v-flex xs12 class="text-xs-center" v-if="loading" mt-5>
               <v-progress-circular indeterminate color="primary"></v-progress-circular>

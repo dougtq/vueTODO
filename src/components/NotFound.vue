@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-jumbotron src="https://www.elegantthemes.com/blog/wp-content/uploads/2017/07/404-error.png">
+    <v-jumbotron :src="errorSrc">
       <h1 class="display-1 top-title">Sorry!</h1>
       <v-container fill-height>
         <v-layout align-center>
@@ -8,7 +8,9 @@
             <!-- <span class="subheading">Lorem ipsum dolor sit amet, pri veniam forensibus id. Vis maluisset molestiae id, ad semper lobortis cum. At impetus detraxit incorrupte usu, repudiare assueverit ex eum, ne nam essent vocent admodum.</span> -->
             <!-- <div class="title mb-3">Go to the initial page of our app!</div> -->
             <!-- <v-divider class="my-3"></v-divider> -->
-            <v-btn large color="primary" :to="{ name: 'Index' }" class="mx-0">Start over again</v-btn>
+            <v-btn large outline color="primary" :to="{ name: 'Index' }" class="mx-0">
+              <v-icon color="black">undo</v-icon>
+            </v-btn>
           </v-flex>
         </v-layout>
       </v-container>
@@ -17,7 +19,13 @@
 </template>
 
 <script>
-export default {}
+export default {
+  data: function () {
+    return {
+      errorSrc: 'https://www.elegantthemes.com/blog/wp-content/uploads/2017/07/404-error.png',
+    };
+  }
+}
 </script>
 
 <style scoped>

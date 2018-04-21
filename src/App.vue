@@ -88,7 +88,7 @@ export default {
           {
             route: { name: 'User' },
             name: 'User',
-            icon: 'account_circle',
+            icon: 'person_pin',
           },
         ]
       }

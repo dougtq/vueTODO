@@ -28,8 +28,12 @@
                 required></v-text-field>
             </v-flex>
             <v-flex class="text-xs-center" mt-5>
-              <v-btn color="primary" outline type="submit" :disabled="!formValid || loading">Send</v-btn>
-              <v-btn color="error" outline :to="{ name: 'Index' }" :disabled="loading">Cancel</v-btn>
+              <v-btn color="success" outline type="submit" :disabled="!formValid || loading">
+                <v-icon color="success">check</v-icon>
+              </v-btn>
+              <v-btn color="error" outline :to="{ name: 'Index' }" :disabled="loading">
+                <v-icon color="error">close</v-icon>
+              </v-btn>
             </v-flex>
             <v-flex xs12 class="text-xs-center" v-if="loading" mt-5>
               <v-progress-circular indeterminate color="primary"></v-progress-circular>

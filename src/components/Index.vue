@@ -33,9 +33,15 @@
                 required></v-text-field>
             </v-flex>
             <v-flex class="text-xs-center" mt-5>
-              <v-btn color="primary" type="submit" :disabled="!formValid || loading" outline>Login</v-btn>
-              <v-btn color="indigo lighten-2" :disabled="loading" :to="{ name: 'CreateUser' }" outline>Create Account</v-btn>              
-              <v-btn color="error" :disabled="loading" :to="{ name: 'ResetPassword' }" outline>Can't Login?</v-btn>
+              <v-btn color="indigo lighten-2" :disabled="loading" :to="{ name: 'CreateUser' }" outline>
+                <v-icon large color="indigo lighten-2">person_add</v-icon>
+              </v-btn>              
+              <v-btn color="primary" type="submit" :disabled="!formValid || loading" outline>
+                <v-icon large color="primary">send</v-icon>
+              </v-btn>
+              <v-btn color="error" :disabled="loading" :to="{ name: 'ResetPassword' }" outline>
+                <v-icon large color="error">report</v-icon>
+              </v-btn>
             </v-flex>
             <v-flex xs12 class="text-xs-center" v-if="loading" mt-5>
               <v-progress-circular indeterminate color="primary"></v-progress-circular>

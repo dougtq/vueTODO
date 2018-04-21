@@ -9,7 +9,9 @@
       </v-alert>
     </v-flex>
     <v-dialog v-model="dialog" max-width="500px">
-      <v-btn color="primary" dark outline slot="activator" class="mb-2">New Item</v-btn>
+      <v-btn color="primary" dark outline slot="activator" class="mb-2">
+        <v-icon large color="primary">add</v-icon>
+      </v-btn>
       <v-card>
         <v-card-title>
           <span class="headline">{{ formTitle }}</span>
@@ -36,7 +38,9 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-btn color="red" dark outline class="mb-2" :to="{ name: 'Home' }">Cancel</v-btn>
+    <v-btn color="error" dark outline class="mb-2" :to="{ name: 'Home' }">
+      <v-icon large color="error">close</v-icon>
+    </v-btn>
     <v-flex xs12 class="text-xs-center" v-if="loading" mt-5>
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
     </v-flex>
