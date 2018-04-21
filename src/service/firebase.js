@@ -9,4 +9,13 @@ const App = firebase.initializeApp({
   messagingSenderId: "660796682451"
 });
 
+const fireDB = App.database();
+const storage = App.storage();
+const auth = App.auth();
+
 export default App;
+export {
+  fireDB,
+  storage,
+  auth,
+};
