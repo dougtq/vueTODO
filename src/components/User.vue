@@ -7,6 +7,21 @@
       <v-flex xs12 sm6 offset-sm3 mt-3>
         <v-form v-model="formValid">
           <v-layout column>
+            <v-flex
+              xs12
+              sm6
+              md8
+              text-xs-center
+              layout
+              align-center
+              justify-center>
+              <v-avatar
+                :tile="tile"
+                :size="avatarSize"
+                class="grey lighten-4">
+                <img :src="profilePic" alt="Profile pic">
+              </v-avatar>
+            </v-flex>
             <v-flex>
               <v-alert type="error" dismissible v-model="alert">
                 {{ error }}
@@ -46,32 +61,43 @@ export default {
   data () {
     return {
       name: 'User Info',
+      tile: false,
+      avatarSize: 150,
       alert: false,
       formValid: false,
       email: this.$store.state.user.email,
       emailRules: [(r) => !!r || `E-mail is required`],
     };
   },
+  created () {
+    this.$store.dispatch('getPhoto');
+  },
   methods: {},
   computed: {
     error () {
-      return this.$store.state.error
+      return this.$store.state.error;
     },
     loading () {
-      return this.$store.state.loading
-    }
+      return this.$store.state.loading;
+    },
+    profilePic () {
+      return this.$store.state.pic;
+    },
   },
   watch: {
     error (value) {
       if (value) {
-        this.alert = true
-      }
+        this.alert = true;
+      };
     },
     alert (value) {
       if (!value) {
-        this.$store.commit('setError', null)
-      }
+        this.$store.commit('setError', null);
+      };
     },
   },
 }
 </script>
+
+<style scoped>
+</style>
