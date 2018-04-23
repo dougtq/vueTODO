@@ -5,8 +5,6 @@ import { generate } from 'shortid';
 import { fireDB, storage, auth } from '@/service/firebase';
 import router from '@/router';
 
-// const fireDB = firebase.database();
-
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
@@ -15,6 +13,7 @@ const store = new Vuex.Store({
     error: null,
     loading: false,
     user: null,
+    pic: null,
     todo: [],
   },
   mutations: {
@@ -30,9 +29,12 @@ const store = new Vuex.Store({
     setTodo(state, payload) {
       state.todo = payload;
     },
+    setPic(state, payload) {
+      state.pic = payload; 
+    },
     addTask(state, payload) {
       state.todo = [...state.todo, payload]; 
-    }
+    },
   },
   actions: {
     createUser ({ commit }, payload) {
@@ -57,6 +59,7 @@ const store = new Vuex.Store({
         .then(user => {
           commit('setUser', { email: user.email });
           commit('setError', null);
+          store.dispatch('getPhoto');
 
           sessionStorage.setItem('email', user.email);
           router.push('/home');
@@ -76,6 +79,7 @@ const store = new Vuex.Store({
       sessionStorage.clear();
       commit('setUser', null);
       commit('setError', null);
+      commit('setTodo', null);
       router.push('/');
     },
     resetPassword ({commit}, payload) {
@@ -124,7 +128,6 @@ const store = new Vuex.Store({
       fireDB.ref(`${key}/${id}`).set(payload)
         .then((resp)=> {
           commit('setError',  null);
-          // commit('addTask', payload);
         })
         .catch((err)=> {
           commit('setError',  err);
@@ -148,7 +151,7 @@ const store = new Vuex.Store({
           commit('setError',  null);
         })
         .catch((err)=> {
-          commit('setError',  err.response.data.data.message);
+          commit('setError',  err);
         })
         .catch((err) => {
           commit('setError',  'An error ocurred, try again later');
@@ -170,7 +173,7 @@ const store = new Vuex.Store({
           commit('setError',  null);
         })
         .catch((err)=> {
-          commit('setError',  err.response.data.data.message);
+          commit('setError',  err);
         })
         .catch((err) => {
           commit('setError',  'An error ocurred, try again later');
@@ -178,6 +181,45 @@ const store = new Vuex.Store({
         .finally(() => {
           commit('setLoading', false);
         });
+    },
+    takePhoto({ commit }, payload) {
+      commit('setLoading', true);
+
+      const mediaStreamTrack = payload.stream.getVideoTracks()[0];
+      const imageCapture = new window.ImageCapture(mediaStreamTrack);
+      const { email } = store.state.user;
+      const key = email.replace(/[^a-zA-Z]/g, '');
+
+      imageCapture.takePhoto().then(blob => {
+        storage.ref()
+          .child(`${key}/profile`)
+          .put(blob)
+            .then( async () => {
+              const url = await storage.ref()
+              .child(`${key}/profile`)
+              .getDownloadURL();
+
+              commit('setPic', url);
+              router.go(-1);
+            })
+            .catch((err) => commit('setError', err))
+            .finally(() => commit('setLoading', false))
+      });
+    },
+    getPhoto({ commit }, payload) {
+      const { email } = store.state.user;
+      const key = email.replace(/[^a-zA-Z]/g, '');
+
+      if (store.state.pic === null) {
+        storage.ref()
+        .child(`${key}/profile`)
+        .getDownloadURL()
+        .then((url) => {
+          commit('setPic', url);
+        })
+        .catch((err) => commit('setError', err))
+        .finally(() => commit('setLoading', false));
+      }
     },
   },
   getters: {
