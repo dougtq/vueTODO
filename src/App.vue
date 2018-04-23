@@ -53,7 +53,7 @@
         </v-container>
       </v-flex>
     </v-layout>
-    <v-footer app></v-footer>
+    <!-- <v-footer app></v-footer> -->
   </v-app>
 </template>
 
@@ -83,7 +83,7 @@ export default {
           {
             route: { name: 'ToDo' },
             name: 'To Do',
-            icon: 'receipt',
+            icon: 'format_list_numbered',
           },
           {
             route: { name: 'User' },
