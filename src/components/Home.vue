@@ -11,11 +11,8 @@
               <h3 class="display-2">To-Do App</h3>
               <span class="subheading">Lorem ipsum dolor sit amet, pri veniam forensibus id. Vis maluisset molestiae id, ad semper lobortis cum.</span>
               <v-divider class="my-3"></v-divider>
-              <v-btn :to="{ name: 'User' }" color="primary" class="mx-0" large outline>
-                <v-icon large color="">person_pin</v-icon>
-              </v-btn>
-              <v-btn :to="{ name: 'ToDo' }" color="indigo" class="mx-0" large outline>
-                <v-icon large color="">format_list_numbered</v-icon>
+              <v-btn v-for="(route, i) of routes" :key="i" :to="route.route" :color="route.color" class="mx-0" large outline>
+                <v-icon large>{{route.icon}}</v-icon>
               </v-btn>
             </v-flex>
           </v-layout>
@@ -32,5 +29,25 @@ export default {
       name: 'Home'
     }
   },
+  computed: {
+    routes() {
+      return [
+        {
+          route: { name: 'User' },
+          name: 'User',
+          icon: 'person_pin',
+          color: 'primary',
+          iconColor: 'primary',
+        },
+        {
+          route: { name: 'ToDo' },
+          name: 'To Do',
+          icon: 'format_list_numbered',
+          color: 'indigo',
+          iconColor: 'indigo',
+        },
+      ]
+    }
+  }
 }
 </script>
