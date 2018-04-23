@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-layout row wrap>
       <v-flex xs12 class="text-xs-center" mt-5>
-        <h1>{{ title }}</h1>
+        <h1>{{ name }}</h1>
       </v-flex>
       <v-flex xs12 sm6 offset-sm3 mt-3>
         <v-form v-model="formValid" @submit.prevent="resetPassword">
@@ -49,7 +49,7 @@
 export default {
   data: function () {
     return {
-      title: 'Reset Account',
+      name: 'Reset Account',
       alert: false,
       message: true,
       formValid: false,

@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-jumbotron :src="errorSrc">
-      <h1 class="display-1 top-title">Sorry!</h1>
+      <h1 class="display-1 top-title">{{ messageTitle }}</h1>
       <v-container fill-height>
         <v-layout align-center>
           <v-flex class="text-xs-center">
@@ -23,6 +23,8 @@ export default {
   data: function () {
     return {
       errorSrc: 'https://www.elegantthemes.com/blog/wp-content/uploads/2017/07/404-error.png',
+      messageTitle: 'Sorry!',
+      message: '', 
     };
   }
 }
