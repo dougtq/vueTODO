@@ -14,7 +14,7 @@
             </v-flex>
             <v-flex>
               <v-alert type="primary" dismissible v-model="message">
-                After you send your e-mail check your inbox to reset your password!
+                Tell us your e-mail and check your inbox after some minutes to reset your password!
               </v-alert>
             </v-flex>
             <v-flex>

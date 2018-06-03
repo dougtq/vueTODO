@@ -1,15 +1,17 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import firebase from 'firebase';
 import { generate } from 'shortid';
 
-import { fireDB, storage, auth } from '@/service/firebase';
 import router from '@/router';
+import { fireDB, storage, auth } from '@/service/firebase';
 
+const github = new firebase.auth.GithubAuthProvider();
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
-    app: 'Todo App',
+    app: 'To Be Done',
     error: null,
     loading: false,
     user: null,
@@ -41,19 +43,19 @@ const store = new Vuex.Store({
       commit('setLoading', true)
       auth.createUserWithEmailAndPassword(payload.email, payload.password)
       .then(user => {
-        commit('setUser', { email: user.email })
-        commit('setError', null)
-        router.push('/home')
+        commit('setUser', { email: user.email });
+        commit('setError', null);
+        router.push('/home');
       })
       .catch(error => {
-        commit('setError', error.message)
+        commit('setError', error.message);
       })
       .finally(() => {
         commit('setLoading', false);
       });
     },
     userSignIn ({commit}, payload) {
-      commit('setLoading', true)
+      commit('setLoading', true);
       auth
         .signInWithEmailAndPassword(payload.email, payload.password)
         .then(user => {
@@ -71,8 +73,37 @@ const store = new Vuex.Store({
           commit('setLoading', false);
         });
     },
-    autoSignIn ({commit}, payload) {
+    userSignInWithGithub({commit}, payload) {
+      commit('setLoading', true);
+      
+      auth
+        .signInWithPopup(github)
+        .then(async result => {
+          const accessToken = result.credential.accessToken;
+          const { user } = result;
+          
+          commit('setUser', { email: user.email, fullName: user.displayName, accessToken });
+          sessionStorage.setItem('email', user.email);
+          sessionStorage.setItem('accessToken', accessToken);
+
+          await store.dispatch('getPhoto');
+          if (!store.state.pic) {
+            commit('setPic', user.photoURL);
+          }
+          commit('setError', null);
+          router.push('/home');
+        })
+        .catch(error => {
+          commit('setError', error.message);
+        })
+        .finally(() => {
+          commit('setLoading', false);
+        });
+    },
+    async autoSignIn ({commit}, payload) {
       commit('setUser', { email: payload.email });
+      await store.dispatch('getPhoto');
+      router.push('/home');
     },
     userSignOut ({commit}) {
       auth.signOut();
@@ -98,30 +129,33 @@ const store = new Vuex.Store({
     },
     getTasks({ commit }) {
       commit('setLoading', true);
-      
+      commit('setError', null);
       const { email } = store.state.user;
-      const key = email.replace(/[^a-zA-Z]/g, '');
+      const key = btoa(email);
       
       fireDB.ref(`${key}`)
       .orderByChild('title')
-      .on('value', data => {
+      .once('value')
+      .then( data => {
         const tasks = [];
+        // data.val();
         data.forEach(el => {
           tasks.push(el.toJSON());
         });
         commit('setTodo', tasks);
-        commit('setError', null);
-        commit('setLoading', false);
-      }, err => {
+      })
+      .catch((err) => {
         commit('setError',  err);
+      })
+      .finally(() => {
         commit('setLoading', false);
-      });
+      })
     },
     createTask({ commit }, payload) {
       commit('setLoading', true);
 
       const { email } = store.state.user;
-      const key = email.replace(/[^a-zA-Z]/g, '');
+      const key = btoa(email);
       const id = generate();
       payload.id = id;
 
@@ -133,6 +167,7 @@ const store = new Vuex.Store({
           commit('setError',  err);
         })
         .catch((err) => {
+          commit('setTodo', {})
           commit('setError',  'An error ocurred, try again later');
         })
         .finally(() => {
@@ -142,7 +177,7 @@ const store = new Vuex.Store({
     updateTask({ commit }, payload) {
       commit('setLoading', true);
       const { email } = store.state.user;
-      const key = email.replace(/[^a-zA-Z]/g, '');
+      const key = btoa(email);
       const id = payload.id;
       
       fireDB.ref(`${key}/${id}`)
@@ -161,10 +196,10 @@ const store = new Vuex.Store({
         });      
     },
     deleteTask({ commit }, payload) {
-      commit('setLoading', true)
+      commit('setLoading', true);
       
       const { email } = store.state.user;
-      const key = email.replace(/[^a-zA-Z]/g, '');
+      const key = btoa(email);
       const id = payload.id;
 
       fireDB.ref(`${key}/${id}`)
@@ -188,7 +223,7 @@ const store = new Vuex.Store({
       const mediaStreamTrack = payload.stream.getVideoTracks()[0];
       const imageCapture = new window.ImageCapture(mediaStreamTrack);
       const { email } = store.state.user;
-      const key = email.replace(/[^a-zA-Z]/g, '');
+      const key = btoa(email);
 
       imageCapture.takePhoto().then(blob => {
         storage.ref()
@@ -208,7 +243,7 @@ const store = new Vuex.Store({
     },
     getPhoto({ commit }, payload) {
       const { email } = store.state.user;
-      const key = email.replace(/[^a-zA-Z]/g, '');
+      const key = btoa(email);
 
       if (store.state.pic === null) {
         storage.ref()

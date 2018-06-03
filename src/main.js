@@ -15,18 +15,18 @@ Vue.use(Vuetify);
 Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
-const unsubscribe = firebase.auth()
-.onAuthStateChanged((user) => {
+// const unsubscribe = firebase.auth()
+// .onAuthStateChanged((user) => {
   new Vue({
     el: '#app',
     router,
     store,
     render: h => h(App),
     created () {
-      if (user) {
+      if (sessionStorage.getItem('email')) {
         store.dispatch('autoSignIn', { email: sessionStorage.getItem('email') });
       };
     },
   });
-  unsubscribe();
-});
+//   unsubscribe();
+// });

@@ -19,13 +19,8 @@
                 :tile="tile"
                 :size="avatarSize"
                 class="grey lighten-4">
-                <img :src="profilePic" alt="Profile pic">
+                <img :src="profilePic">
               </v-avatar>
-            </v-flex>
-            <v-flex>
-              <v-alert type="error" dismissible v-model="alert">
-                {{ error }}
-              </v-alert>
             </v-flex>
             <v-flex>
               <v-text-field

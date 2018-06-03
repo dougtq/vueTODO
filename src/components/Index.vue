@@ -14,10 +14,12 @@
             </v-flex>
             <v-flex>
               <v-text-field
+                autofocus
                 name="email"
                 label="E-mail"
                 id="email"
                 type="email"
+                autocomplete="off"
                 v-model="email"
                 :rules="emailRules"
                 required></v-text-field>
@@ -41,6 +43,11 @@
               </v-btn>
               <v-btn color="error" :disabled="loading" :to="{ name: 'ResetPassword' }" outline>
                 <v-icon large color="error">report</v-icon>
+              </v-btn>
+            </v-flex>
+            <v-flex xs12 class="text-xs-center" mt-5>
+              <v-btn color="grey" :disabled="loading" @click="signInGithub" large outline>
+                <v-icon color="black" large>fab fa-github</v-icon>
               </v-btn>
             </v-flex>
             <v-flex xs12 class="text-xs-center" v-if="loading" mt-5>
@@ -69,6 +76,9 @@ export default {
   methods: {
     signIn() {
       this.$store.dispatch('userSignIn', { email: this.email, password: this.password })
+    },
+    signInGithub() {
+      this.$store.dispatch('userSignInWithGithub');
     },
   },
   computed: {

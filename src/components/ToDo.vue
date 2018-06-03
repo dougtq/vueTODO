@@ -20,7 +20,7 @@
           <v-container grid-list-md>
             <v-layout wrap>
               <v-flex xs12>
-                <v-text-field label="Title" required :rules="titleRules" v-model="editedItem.title"></v-text-field>
+                <v-text-field autofocus label="Title" required :rules="titleRules" v-model="editedItem.title"></v-text-field>
               </v-flex>
               <v-flex xs12>
                 <v-text-field label="Description"  v-model="editedItem.description"></v-text-field>

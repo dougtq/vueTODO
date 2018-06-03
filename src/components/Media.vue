@@ -1,9 +1,9 @@
 <template>
   <v-container fluid>
     <v-layout row wrap>
-      <v-flex xs12 class="text-xs-center" mt-5>
+      <!-- <v-flex xs12 class="text-xs-center" mt-5>
         <h1>{{ name }}</h1>
-      </v-flex>
+      </v-flex> -->
       <v-flex align-center>
         <v-flex>
           <v-alert type="error" dismissible v-model="alert">
@@ -11,8 +11,8 @@
           </v-alert>
         </v-flex>
         <div class="camera-modal">
-          <video ref="video" class="camera-stream"></video>
-          <v-flex class="text-xs-center" mt-5>
+          <video poster="@/assets/logo.png" ref="video" class="camera-stream"></video>
+          <v-flex class="text-xs-center">
             <v-btn color="teal" :disabled="loading" @click="capture" large outline>
               <v-icon>camera_alt</v-icon>
             </v-btn>
@@ -86,12 +86,15 @@ export default {
 <style scoped>
   .camera-modal {
     width: 100%;
-    height: 100%;
-    /* z-index: 10; */
+    height: 90vh;
   }
   .camera-stream {
     width: 100%;
     max-height: 70%;
+  }
+
+  .camera-modal video {
+    object-fit: contain;
   }
 </style>
 

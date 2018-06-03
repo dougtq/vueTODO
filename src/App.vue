@@ -39,12 +39,16 @@
       </v-list>
     </v-navigation-drawer>
     <v-toolbar dark color="primary">
-      <span>
+      <span v-if="isAuthenticated">
         <v-toolbar-side-icon @click="sidebar = !sidebar"></v-toolbar-side-icon> 
       </span>
       <span class="hidden-xs-and-down">
-        <v-btn class="white--text" color="error" depressed outline>{{ title }}</v-btn>
+        <v-btn class="black--text" large color="error" depressed>{{ title }}</v-btn>
       </span>
+      <v-spacer></v-spacer>
+      <v-btn icon v-if="isAuthenticated">
+        <v-icon>search</v-icon>
+      </v-btn>
     </v-toolbar>
     <v-layout>
       <v-flex>

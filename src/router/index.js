@@ -74,7 +74,9 @@ const myRoutes = new Router({
 });
 
 myRoutes.beforeEach((to, from, next) => {
-  if (to.meta.requiresAuth && (!sessionStorage.getItem('email') || !store.state.user)) {
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+
+  if (requiresAuth && (!sessionStorage.getItem('email'))) {
     return next('/');
   };
   next();
