@@ -1,4 +1,4 @@
-# intelup
+# vueTODO
 
 > A Vue.js project
 
